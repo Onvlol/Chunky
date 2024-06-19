@@ -16,7 +16,6 @@ import org.popcraft.chunky.util.RegionCache;
 import org.popcraft.chunky.util.TranslationKey;
 
 import java.util.Deque;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
@@ -143,20 +142,10 @@ public class GenerationTask implements Runnable {
                 stop(cancelled);
                 break;
             }
-            final CompletableFuture<Boolean> isChunkGenerated = forceLoadExistingChunks ?
-                    CompletableFuture.completedFuture(false) :
-                    selection.world().isChunkGenerated(chunk.x(), chunk.z());
-            isChunkGenerated
-                    .thenCompose(generated -> {
-                        if (Boolean.TRUE.equals(generated)) {
-                            return CompletableFuture.completedFuture(null);
-                        } else {
-                            return selection.world().getChunkAtAsync(chunk.x(), chunk.z());
-                        }
-                    }).whenComplete((ignored, throwable) -> {
-                        working.release();
-                        update(chunk.x(), chunk.z(), true);
-                    });
+            selection.world().getChunkAtAsync(chunk.x(), chunk.z()).whenComplete((ignored, throwable) -> {
+                working.release();
+                update(chunk.x(), chunk.z(), true);
+            });
         }
         if (stopped) {
             chunky.getServer().getConsole().sendMessagePrefixed(TranslationKey.TASK_STOPPED, selection.world().getName());
