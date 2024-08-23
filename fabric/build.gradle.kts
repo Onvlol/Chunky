@@ -7,7 +7,7 @@ val shade: Configuration by configurations.creating
 dependencies {
     minecraft(group = "com.mojang", name = "minecraft", version = "1.21")
     mappings(group = "net.fabricmc", name = "yarn", version = "1.21+build.2", classifier = "v2")
-    modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.16.x")
+    modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.16.2")
     modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.102.0+1.21")
     modCompileOnly(group = "me.lucko", name = "fabric-permissions-api", version = "0.2-SNAPSHOT")
     implementation(project(":chunky-common"))
